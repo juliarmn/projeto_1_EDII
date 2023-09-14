@@ -315,8 +315,10 @@ void imprimir_em_ordem(indice_primario *raiz, FILE *pri_index)
     }
 }
 
-indice_primario* destruir_avl(indice_primario *raiz) {
-    if (raiz) {
+indice_primario *destruir_avl(indice_primario *raiz)
+{
+    if (raiz)
+    {
         raiz->esquerda = destruir_avl(raiz->esquerda);
         raiz->direita = destruir_avl(raiz->direita);
         free(raiz);
@@ -1352,6 +1354,7 @@ FILE *abrir_arquivo_indices(char *nome, bool *flag)
  */
 void le_e_grava_indice(indice_primario **raiz, FILE *pri_index, FILE *filmes)
 {
+    int count = 0;
     filme f;
     char buffer[TAMANHO_REGISTRO + 1];
     char *campo;
@@ -1365,36 +1368,38 @@ void le_e_grava_indice(indice_primario **raiz, FILE *pri_index, FILE *filmes)
         if (fgets(buffer, TAMANHO_REGISTRO + 1, filmes) == NULL)
         {
             printf("\t\t       \033[31mFIM DO ARQUIVO");
-            return;
         }
-
-        if (buffer[0] == '*' && buffer[1] == '|')
+        else
         {
-            continue;
+            if (buffer[0] == '*' && buffer[1] == '|')
+            {
+                continue;
+            }
+
+            // Inicializar os campos do struct
+            memset(&f, 0, sizeof(filme));
+
+            campo = strtok(buffer, delim);
+
+            strcpy(f.codigo, campo);
+            campo = strtok(NULL, delim);
+            strcpy(f.titulo_pt, campo);
+            campo = strtok(NULL, delim);
+            strcpy(f.titulo_original, campo);
+            campo = strtok(NULL, delim);
+            strcpy(f.diretor, campo);
+            campo = strtok(NULL, delim);
+            strcpy(f.ano, campo);
+            campo = strtok(NULL, delim);
+            strcpy(f.pais, campo);
+            campo = strtok(NULL, delim);
+            f.nota = atoi(campo);
+
+            *raiz = inserir_avl(*raiz, f.codigo, i);
+            count++;
         }
-
-        // Inicializar os campos do struct
-        memset(&f, 0, sizeof(filme));
-
-        campo = strtok(buffer, delim);
-
-        strcpy(f.codigo, campo);
-        campo = strtok(NULL, delim);
-        strcpy(f.titulo_pt, campo);
-        campo = strtok(NULL, delim);
-        strcpy(f.titulo_original, campo);
-        campo = strtok(NULL, delim);
-        strcpy(f.diretor, campo);
-        campo = strtok(NULL, delim);
-        strcpy(f.ano, campo);
-        campo = strtok(NULL, delim);
-        strcpy(f.pais, campo);
-        campo = strtok(NULL, delim);
-        f.nota = atoi(campo);
-
-        *raiz = inserir_avl(*raiz, f.codigo, i);
     }
-
+    printf("%d", count);
     imprimir_em_ordem(*raiz, pri_index);
 }
 
@@ -1556,52 +1561,53 @@ FILE *abrir_arquivo_filme(char *nome, indice_primario *raiz, FILE *pri_index, FI
 /**
  * Compactacao de arquivo, removendo os registros com o indicador de remocao
  */
-FILE* compactacao_arquivo(FILE *filmes, FILE *pri_index, indice_primario *raiz)
+FILE *compactacao_arquivo(FILE *filmes, FILE *pri_index, indice_primario **raiz)
 {
-   FILE *aux = fopen("aux.dat", "w"); // Abra o arquivo "aux"
-  filme f;
-  char *campo;
-  char *delim = "@";
-  char buffer[TAMANHO_REGISTRO + 1];
+    FILE *aux = fopen("aux.dat", "w"); // Abra o arquivo "aux"
+    filme f;
+    char *campo;
+    char *delim = "@";
+    char buffer[TAMANHO_REGISTRO + 1];
 
-  fseek(filmes, 0, SEEK_SET);
+    fseek(filmes, 0, SEEK_SET);
 
-  if (!aux)
-  {
-    return false;
-  }
-
-  while (!feof(filmes))
-  {
-    if (fgets(buffer, TAMANHO_REGISTRO + 1, filmes) == NULL)
+    if (!aux)
     {
-      break;
+        return false;
     }
 
-    if (buffer[0] == '*' && buffer[1] == '|')
+    while (!feof(filmes))
     {
-      continue;
+        if (fgets(buffer, TAMANHO_REGISTRO + 1, filmes) == NULL)
+        {
+            break;
+        }
+
+        if (buffer[0] == '*' && buffer[1] == '|')
+        {
+            continue;
+        }
+
+        fprintf(aux, "%s", buffer);
     }
 
-    fprintf(aux, "%s", buffer);
-  }
+    fclose(aux);
+    fclose(filmes);
 
-  fclose(aux);
-  fclose(filmes);
+    remove("movies.dat");
+    rename("aux.dat", "movies.dat");
 
-  remove("movies.dat");
-  rename("aux.dat", "movies.dat");
+    aux = fopen("movies.dat", "r+a");
 
-  aux = fopen("movies.dat", "r+a");
+    *raiz = destruir_avl(*raiz);
+    le_e_grava_indice(raiz, pri_index, aux);
 
-  destruir_avl(raiz);
-
-  le_e_grava_indice(&raiz, pri_index, filmes);
-
-  return aux;
+    return aux;
 }
 
 // main
+
+// TODO: avisar que apagou
 
 int main()
 {
@@ -1819,7 +1825,7 @@ int main()
         case 7:
         {
             printf("\033[33m\n\t\tInicio da compactacao, aguarde .... \n\033[0m");
-            if (compactacao_arquivo(filmes, pri_index, raiz))
+            if (filmes = compactacao_arquivo(filmes, pri_index, &raiz))
             {
                 printf("\033[95m\n******************   SUCESSO   ********************\033[0m\n");
             }
