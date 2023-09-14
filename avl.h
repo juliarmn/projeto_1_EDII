@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// Struct para no da arvore
 typedef struct primario
 {
     char codigo[6];
@@ -13,6 +14,7 @@ typedef struct primario
     struct primario *direita;
 } indice_primario;
 
+// Funcoes de manipulacao da arvore avl
 int maior(int a, int b);
 indice_primario *novo_no(int offset, char *cod);
 int altura(indice_primario *no);

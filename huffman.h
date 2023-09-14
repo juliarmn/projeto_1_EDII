@@ -10,12 +10,14 @@
 #define TAMANHO_REGISTRO 192
 #define MAX_CHAR 256
 
+// Struct para tabela de frequencias de letras
 typedef struct freq
 {
     char caracter;
     int freq;
 } char_frequencia;
 
+// Struct paara no da arvore e elemento da lista
 typedef struct no
 {
     unsigned char caracter;
@@ -25,12 +27,14 @@ typedef struct no
     struct no *prox;
 } node;
 
+// Struct que define a lista de huffman em si
 typedef struct lista_huffman
 {
     node *inicio;
     int tamanho;
 } list;
 
+// Funcoes para Huffman
 void inicializar_freq(unsigned int tabela[]);
 void preenche_tabela(FILE *filmes, unsigned int tabela[]);
 void imprimir_tabela_freq(unsigned int tabela[]);

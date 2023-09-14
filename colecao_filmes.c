@@ -82,7 +82,7 @@ int escreve_arq_filme(FILE *filmes, char *indice_prim, char *titulo)
     filme f;
     printf("\n\033[95m*****************************************************\33[0m");
     printf("\n\t\t\033[32mInsira os dados: \n");
-
+    printf("\033[31m EVITE ACENTUACAO\n");
     printf("\33[95mTitulo pt: \33[0m");
     scanf(" %58[^\n]s", f.titulo_pt);
     while (getchar() != '\n')
