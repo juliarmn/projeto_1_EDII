@@ -47,3 +47,10 @@ O arquivo movies.dat que estou usando foi gerado pelo meu colega de sala e usei 
 ## IMPORTANTE
 
 Não foi usado acentuação pelo fato de C usar ASCII e mesmo importando a biblioteca para se trabalhar  com esses tipos de caracteres, a locale.h, houveram erros que não consegui corrigir, então ao inserir, evite caracteres de acentuação.
+
+## Podia melhorar:
+
+Algumas melhorias poderiam ser feitas, tais quais:
+
+- Funções extras para trechos repetidos: não foi feito pelo tempo e porque tive medo de acabar dando algum erro de alguma forma
+- Descompactar Huffman
