@@ -1,5 +1,6 @@
 #include "huffman.h"
 
+// INicializa a tabela de frequencias para todo valor ser 0
 void inicializar_freq(unsigned int tabela[])
 {
     for (int i = 0; i < MAX_CHAR; i++)
@@ -25,7 +26,7 @@ void preenche_tabela(FILE *filmes, unsigned int tabela[])
 
         while (buffer[i] != '\0')
         {
-            tabela[buffer[i]]++;
+            tabela[buffer[i]]++; // Incrementa o valor da posicao da letra encontrada
             i++;
         }
     }
@@ -54,14 +55,14 @@ void inicializar_lista(list **lista)
  */
 void inserir_ordenado(list **lista, node *no)
 {
-    if (!(*lista)->inicio)
+    if (!(*lista)->inicio) // Primeiro elemento
     {
         (*lista)->inicio = no;
         (*lista)->tamanho++;
         return;
     }
 
-    if (no->frequencia < (*lista)->inicio->frequencia)
+    if (no->frequencia < (*lista)->inicio->frequencia) // Atualizar cabeca da lista
     {
         no->prox = (*lista)->inicio;
         (*lista)->inicio = no;
@@ -71,12 +72,12 @@ void inserir_ordenado(list **lista, node *no)
 
     node *aux = (*lista)->inicio;
 
-    while (aux->prox && (aux->prox->frequencia < no->frequencia))
+    while (aux->prox && (aux->prox->frequencia < no->frequencia)) // Anda a arvore ate achar a posicao para inserir o no
     {
         aux = aux->prox;
     }
 
-    if (aux->prox)
+    if (aux->prox) // insere o proximo se estiver no meio
     {
         no->prox = aux->prox;
         aux->prox = no;
@@ -84,7 +85,7 @@ void inserir_ordenado(list **lista, node *no)
         return;
     }
 
-    aux->prox = no;
+    aux->prox = no; // insere se estiver no final
     (*lista)->tamanho++;
 
     no->prox = NULL;
@@ -99,7 +100,7 @@ void preencher_lista(unsigned int tabela[], list *lista)
     for (int i = 0; i < MAX_CHAR; i++)
     {
         if (tabela[i] > 0)
-        {
+        {   // Preenche a lista de acordo com as frequencias -> ordena por frequencia
             novo = malloc(sizeof(node));
             if (!novo)
             {
@@ -129,7 +130,7 @@ void imprimir_lista(list *lista)
  * Remove sempre o primeiro no da lista
  */
 node *remover_no_inicio(list *lista)
-{
+{ // Remove sempre o inicioi por ser o de menor  frequencia
     node *aux = NULL;
     if (lista->inicio)
     {
@@ -152,7 +153,7 @@ node *montar_arvore_huffman(list *lista)
     node *prim, *seg, *novo;
     while (lista->tamanho > 1)
     {
-        prim = remover_no_inicio(lista);
+        prim = remover_no_inicio(lista); // elementos removidos que virarao novo no  da arvore com frequencia somada
         seg = remover_no_inicio(lista);
         novo = malloc(sizeof(node));
         if (!novo)
@@ -233,8 +234,8 @@ void gerar_dicionario(char **dicionario, node *raiz, char *caminho, int colunas)
     {
         strcpy(esq, caminho);
         strcpy(dir, caminho);
-        strcat(esq, "0");
-        strcat(dir, "1");
+        strcat(esq, "0"); // defini esquerda 0 
+        strcat(dir, "1"); // direita 1
 
         gerar_dicionario(dicionario, raiz->esq, esq, colunas);
         gerar_dicionario(dicionario, raiz->dir, dir, colunas);
@@ -275,7 +276,7 @@ char *codificar_huffman(char **dicionario, unsigned char *texto)
 
     while (texto[i] != '\0')
     {
-        strcat(codigo, dicionario[texto[i]]);
+        strcat(codigo, dicionario[texto[i]]); // Gera o binario a partir do  dicionario
         i++;
     }
     codigo[i] = '\0';
@@ -347,7 +348,7 @@ bool compactar_arquivo_huffman(FILE **filmes, char **dicionario, int colunas, no
             byte = (byte << 1) | bit;
             bit_count++;
 
-            // Se tivermos 8 bits no byte, escreve no arquivo
+            // Se tem 8 bits no byte, escreve no arquivo
             if (bit_count == 8)
             {
                 printf("\nletra: %c", byte);

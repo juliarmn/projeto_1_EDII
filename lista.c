@@ -1,11 +1,15 @@
 #include "lista.h"
 
+/**
+ * Funcao para inserção na lista secundaria por ordem de nome
+ * Passa os valores de posicoes em ponteiros para modificar o valor fora do escopo da funcao
+*/
 void inserir_secundario(int *head, int *ppl, indice_sec *lista, char *titulo, int posicao_prim)
 {
     strcpy(lista[*ppl].titulo_original, titulo);
-    lista[*ppl].posicao_primario = posicao_prim;
+    lista[*ppl].posicao_primario = posicao_prim; // Copia na primeira posicao livre
 
-    if (*head == -1)
+    if (*head == -1) // Se for o primeiro elemento, tem que verificar o head (modificar seu valor)
     {
         (*head) = *ppl;
         lista[*ppl].proximo = -1;
@@ -14,7 +18,7 @@ void inserir_secundario(int *head, int *ppl, indice_sec *lista, char *titulo, in
         return;
     }
 
-    if (strcmp(titulo, lista[*head].titulo_original) < 0)
+    if (strcmp(titulo, lista[*head].titulo_original) < 0) // Verifica se e menor que o head, pois nesse caso, o valor de head modifica
     {
         lista[*ppl].proximo = *head;
         *head = *ppl;
@@ -22,20 +26,20 @@ void inserir_secundario(int *head, int *ppl, indice_sec *lista, char *titulo, in
         return;
     }
 
-    int atual = *head;
+    int atual = *head; 
     int anterior = -1;
 
-    while (atual != -1 && strcmp(titulo, lista[atual].titulo_original) > 0)
+    while (atual != -1 && strcmp(titulo, lista[atual].titulo_original) > 0) // Percorre a lista ate achar a posicao
     {
         anterior = atual;
         atual = lista[atual].proximo;
     }
 
-    lista[*ppl].proximo = atual;
+    lista[*ppl].proximo = atual; // Aqui encontrou sua posicao
 
     if (anterior != -1)
     {
-        lista[anterior].proximo = *ppl;
+        lista[anterior].proximo = *ppl; // Ultimo elemento da lista
     }
     else
     {
@@ -51,12 +55,12 @@ void inserir_secundario(int *head, int *ppl, indice_sec *lista, char *titulo, in
 int buscar_lista_sec(int head, indice_sec *lista_sec, char *titulo)
 {
     int i = head;
-    if (head == -1)
+    if (head == -1) // Se a lista esta vazia
         return -1;
 
     do
     {
-        if (strcmp(lista_sec[i].titulo_original, titulo) == 0)
+        if (strcmp(lista_sec[i].titulo_original, titulo) == 0) // Busca o lemento e retorna a posicao se achar
             return i;
 
         i = lista_sec[i].proximo;
@@ -71,13 +75,13 @@ int buscar_lista_sec(int head, indice_sec *lista_sec, char *titulo)
 int buscar_lista_secundaria_para_operacao(int head, indice_sec *lista_sec, primarios_lista *lista_invertida, char *titulo)
 {
     int i = head;
-    if (head == -1)
+    if (head == -1) // Caso a lista esteja vazia
         return -1;
 
     do
     {
         if (strcmp(lista_sec[i].titulo_original, titulo) == 0 && lista_invertida[lista_sec[i].posicao_primario].id_prim[0] != '\0')
-            return lista_sec[i].posicao_primario;
+            return lista_sec[i].posicao_primario; // Porcura o elemennto valido da lsita secundaria (busca por nome na funcaao)
 
         i = lista_sec[i].proximo;
 
@@ -87,7 +91,7 @@ int buscar_lista_secundaria_para_operacao(int head, indice_sec *lista_sec, prima
 }
 
 /**
- * Busca pela posicao do rpimario na lsita invertida
+ * Busca pela posicao do primario na lsita invertida
  */
 int busca_sec_cod_prim(int head, indice_sec *lista_sec, int index)
 {
@@ -100,7 +104,7 @@ int busca_sec_cod_prim(int head, indice_sec *lista_sec, int index)
 
     do
     {
-        if (lista_sec[i].posicao_primario == index)
+        if (lista_sec[i].posicao_primario == index) // Busca o index
             return i;
         i = lista_sec[i].proximo;
     } while (lista_sec[i].proximo != -1);
@@ -120,7 +124,7 @@ void remocao_lista_invertida(indice_sec *lista_sec, primarios_lista *lista_inver
     int indice_sec;
     if (i < 1000)
     {
-        if (lista_invertida[i].prox != -1)
+        if (lista_invertida[i].prox != -1) // Caso o elemento da lista invertida nao tenha proximo
         {
             aux = lista_invertida[i].prox;
             strcpy(lista_invertida[i].id_prim, lista_invertida[aux].id_prim);

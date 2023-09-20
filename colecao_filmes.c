@@ -82,7 +82,7 @@ int escreve_arq_filme(FILE *filmes, char *indice_prim, char *titulo)
     filme f;
     printf("\n\033[95m*****************************************************\33[0m");
     printf("\n\t\t\033[32mInsira os dados: \n");
-    printf("\033[31m EVITE ACENTUACAO\n");
+    printf("\033[31mEVITE ACENTUACAO\n");
     printf("\33[95mTitulo pt: \33[0m");
     scanf(" %58[^\n]s", f.titulo_pt);
     while (getchar() != '\n')
@@ -490,7 +490,7 @@ FILE *abrir_arquivo_indices(char *nome, bool *flag)
 {
     FILE *arquivo = fopen(nome, "r+a");
 
-    if (arquivo == NULL)
+    if (arquivo == NULL) // caso seja a primeira vez do arquivo
     {
         arquivo = fopen(nome, "w+");
     }
@@ -618,7 +618,7 @@ void grava_indice_sec(indice_sec *lista_sec, primarios_lista *lista_invertida, F
         }
     }
 
-    int j = *head; // arrumar
+    int j = *head; 
     int k = lista_sec[j].posicao_primario;
 
     do

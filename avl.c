@@ -2,6 +2,7 @@
 
 int maior(int a, int b) { return (a > b) ? a : b; }
 
+// Faz alocacao  do  novo no
 indice_primario *novo_no(int offset, char *cod)
 {
     indice_primario *raiz = malloc(sizeof(indice_primario));
@@ -22,8 +23,9 @@ indice_primario *novo_no(int offset, char *cod)
     return raiz;
 }
 
+// Calcula a leitura por recursao
 int altura(indice_primario *no)
-{ // segmentation
+{ 
     if (!no)
         return 0;
 
@@ -35,6 +37,7 @@ int altura(indice_primario *no)
     return dir + 1;
 }
 
+// Verifica a diferenca de altura para balanceamento
 int diferenca_altura(indice_primario *no)
 {
     if (!no)
@@ -44,6 +47,7 @@ int diferenca_altura(indice_primario *no)
     return (altura_esq - altura_dir);
 }
 
+// Devolve o menor dos maiores para balanceamento
 indice_primario *menor_no(indice_primario *no)
 {
     indice_primario *aux = no;
@@ -54,6 +58,7 @@ indice_primario *menor_no(indice_primario *no)
     return aux;
 }
 
+// Rotaciona caso tenhamos uma diagonal secundaria
 indice_primario *rotacao_dir(indice_primario *no)
 {
     indice_primario *esq = no->esquerda;
@@ -68,6 +73,7 @@ indice_primario *rotacao_dir(indice_primario *no)
     return esq;
 }
 
+// Rotaciona no caso de ser uma rotacao em uma diagonal principal
 indice_primario *rotacao_esq(indice_primario *no)
 {
     indice_primario *dir = no->direita;
@@ -94,26 +100,27 @@ indice_primario *rotacao_dir_esq(indice_primario *no)
     return (rotacao_esq(no));
 }
 
+// Insercao AVL 
 indice_primario *inserir_avl(indice_primario *raiz, char *cod, int offset)
 {
-    if (!raiz)
+    if (!raiz) // VVerifica se ja chegou no fim da arvore ou caso esteja vazia, insere
     {
         return novo_no(offset, cod);
     }
 
     if (strcmp(cod, raiz->codigo) < 0)
     {
-        raiz->esquerda = inserir_avl(raiz->esquerda, cod, offset);
+        raiz->esquerda = inserir_avl(raiz->esquerda, cod, offset); // Percorre a arvore de acordo com o valor
     }
     else
     {
         raiz->direita = inserir_avl(raiz->direita, cod, offset);
     }
 
-    raiz->altura = 1 + maior(altura(raiz->esquerda), altura(raiz->direita));
+    raiz->altura = 1 + maior(altura(raiz->esquerda), altura(raiz->direita)); // Varifica a altura desse no
 
     int diferenca = diferenca_altura(raiz);
-
+    // Diferenca de altura define o fator de balanceeamento
     if (diferenca > 1 && strcmp(cod, raiz->esquerda->codigo) < 0)
     {
         return rotacao_dir(raiz);
@@ -136,6 +143,7 @@ indice_primario *inserir_avl(indice_primario *raiz, char *cod, int offset)
     return raiz;
 }
 
+// Busca o menor dos maiores pra balancear
 indice_primario *menor_direita(indice_primario *raiz)
 {
     indice_primario *busca = raiz;
@@ -146,6 +154,7 @@ indice_primario *menor_direita(indice_primario *raiz)
     return busca;
 }
 
+// Remove recursivamente um indice
 indice_primario *remover_indice(indice_primario *raiz, char *cod, FILE *filmes)
 {
     if (!raiz)
@@ -208,7 +217,7 @@ indice_primario *remover_indice(indice_primario *raiz, char *cod, FILE *filmes)
 
     return raiz;
 }
-
+// BUsca o elemento na AVL avaliando seu valor, que compara se e maior ou menor que o no atual e percorre a arvore
 indice_primario *busca_avl(indice_primario *raiz, char *info)
 {
     if (!raiz)
@@ -234,6 +243,7 @@ void imprimir_em_ordem(indice_primario *raiz, FILE *pri_index)
     }
 }
 
+// Destroi a AVL para sua reconstrucao
 indice_primario *destruir_avl(indice_primario *raiz)
 {
     if (raiz)
